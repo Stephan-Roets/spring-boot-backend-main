@@ -1,0 +1,85 @@
+# ============================================
+# Local Development Configuration Template
+# ============================================
+# Copy this file to 'application-local.properties' and fill in your actual values.
+# The 'application-local.properties' file is in .gitignore and won't be committed.
+#
+# Usage:
+# 1. Copy this file: cp application-local.properties.template application-local.properties
+# 2. Fill in your actual values below
+# 3. Run the application with: ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+#    OR set environment variable: SPRING_PROFILES_ACTIVE=local
+# ============================================
+
+# ============================================
+# Database Configuration
+# ============================================
+# For local testing, you can use your Supabase database or a local PostgreSQL instance
+
+# Option 1: Use your Supabase database
+DATABASE_URL=jdbc:postgresql://your-project-ref.supabase.co:5432/postgres
+DATABASE_USER=postgres
+DATABASE_PASSWORD=your-supabase-database-password
+
+# Option 2: Use local PostgreSQL
+# DATABASE_URL=jdbc:postgresql://localhost:5432/todoapp
+# DATABASE_USER=postgres
+# DATABASE_PASSWORD=your-local-postgres-password
+
+# ============================================
+# JWT Secret
+# ============================================
+# Generate a secure random string for local testing
+# You can generate one with: openssl rand -base64 32
+# Or use any secure random string (minimum 256 bits / 32 characters)
+JWT_SECRET=your-256-bit-secret-key-for-local-development-change-this
+
+# ============================================
+# SMTP Configuration (Email Verification)
+# ============================================
+# See SMTP_SETUP.md for detailed instructions on getting Gmail App Password
+
+# Gmail SMTP (recommended for testing)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-16-char-app-password
+
+# Alternative: SendGrid
+# SMTP_HOST=smtp.sendgrid.net
+# SMTP_PORT=587
+# SMTP_USERNAME=apikey
+# SMTP_PASSWORD=your-sendgrid-api-key
+
+# Alternative: Mailgun
+# SMTP_HOST=smtp.mailgun.org
+# SMTP_PORT=587
+# SMTP_USERNAME=postmaster@your-domain.mailgun.org
+# SMTP_PASSWORD=your-mailgun-password
+
+# ============================================
+# Frontend URL
+# ============================================
+# URL of your frontend application for email verification links
+FRONTEND_URL=http://localhost:3000
+
+# If testing with your deployed Vercel frontend:
+# FRONTEND_URL=https://your-app-name.vercel.app
+
+# ============================================
+# CORS Configuration
+# ============================================
+# Allowed origins for CORS (comma-separated for multiple origins)
+CORS_ALLOWED_ORIGINS=http://localhost:3000
+
+# For multiple origins:
+# CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+
+# ============================================
+# NOTES:
+# ============================================
+# - Never commit application-local.properties to Git (it's in .gitignore)
+# - For production, set these as environment variables in Railway
+# - See SMTP_SETUP.md for detailed email configuration instructions
+# - See SUPABASE_RLS_SETUP.md for database RLS configuration
+# ============================================
