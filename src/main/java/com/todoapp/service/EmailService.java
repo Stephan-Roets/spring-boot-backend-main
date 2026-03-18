@@ -1,12 +1,12 @@
 package com.todoapp.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.SendEmailRequest;
+import com.resend.services.emails.model.SendEmailResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,38 +17,46 @@ public class EmailService {
         EmailService.class
     );
 
-    private final JavaMailSender mailSender;
+    private final Resend resendClient;
     private final String frontendUrl;
+    private final String fromEmail;
 
     public EmailService(
-        JavaMailSender mailSender,
-        @Value("${app.frontend.url}") String frontendUrl
+        @Value("${resend.api.key}") String resendApiKey,
+        @Value("${app.frontend.url}") String frontendUrl,
+        @Value("${resend.from.email:onboarding@resend.dev}") String fromEmail
     ) {
-        this.mailSender = mailSender;
+        this.resendClient = new Resend(resendApiKey);
         this.frontendUrl = frontendUrl;
+        this.fromEmail = fromEmail;
     }
 
     @Async
     public void sendVerificationEmail(String to, String name, String token) {
         String verifyUrl = frontendUrl + "/verify-email?token=" + token;
         String subject = "Verify your email - ToDo App";
-        String body = buildVerificationEmailHtml(name, verifyUrl);
+        String htmlBody = buildVerificationEmailHtml(name, verifyUrl);
 
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(
-                message,
-                true,
-                "UTF-8"
+            SendEmailRequest emailRequest = SendEmailRequest.builder()
+                .from(fromEmail)
+                .to(to)
+                .subject(subject)
+                .html(htmlBody)
+                .build();
+
+            SendEmailResponse response = resendClient
+                .emails()
+                .send(emailRequest);
+
+            log.info(
+                "Verification email sent to {} — Resend ID: {}",
+                to,
+                response.getId()
             );
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(body, true);
-            mailSender.send(message);
-            log.info("Verification email sent to {}", to);
-        } catch (MessagingException e) {
+        } catch (ResendException e) {
             log.warn(
-                "Failed to send verification email to {} — SMTP error: {}",
+                "Failed to send verification email to {} — Resend error: {}",
                 to,
                 e.getMessage()
             );

@@ -35,27 +35,26 @@ DATABASE_PASSWORD=your-supabase-database-password
 JWT_SECRET=your-256-bit-secret-key-for-local-development-change-this
 
 # ============================================
-# SMTP Configuration (Email Verification)
+# Email Configuration (Resend API)
 # ============================================
-# See SMTP_SETUP.md for detailed instructions on getting Gmail App Password
+# Sign up at https://resend.com (Free tier: 3,000 emails/month, 100/day)
+# Get your API key from https://resend.com/api-keys
 
-# Gmail SMTP (recommended for testing)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-16-char-app-password
+# Resend API Key (REQUIRED)
+# ⚠️ Replace re_xxxxxxxxx with your actual Resend API key
+RESEND_API_KEY=re_xxxxxxxxx
 
-# Alternative: SendGrid
-# SMTP_HOST=smtp.sendgrid.net
-# SMTP_PORT=587
-# SMTP_USERNAME=apikey
-# SMTP_PASSWORD=your-sendgrid-api-key
+# From Email Address (Optional - defaults to onboarding@resend.dev)
+# Default works for testing, but for production use your verified domain
+RESEND_FROM_EMAIL=onboarding@resend.dev
 
-# Alternative: Mailgun
-# SMTP_HOST=smtp.mailgun.org
-# SMTP_PORT=587
-# SMTP_USERNAME=postmaster@your-domain.mailgun.org
-# SMTP_PASSWORD=your-mailgun-password
+# To use your own domain (recommended for production):
+# 1. Go to https://resend.com/domains
+# 2. Click "Add Domain"
+# 3. Add your domain (e.g., yourdomain.com)
+# 4. Add the required DNS records (MX, TXT for SPF, DKIM)
+# 5. Wait for verification (usually a few minutes)
+# 6. Update the from email: RESEND_FROM_EMAIL=noreply@yourdomain.com
 
 # ============================================
 # Frontend URL
@@ -80,6 +79,8 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000
 # ============================================
 # - Never commit application-local.properties to Git (it's in .gitignore)
 # - For production, set these as environment variables in Railway
-# - See SMTP_SETUP.md for detailed email configuration instructions
-# - See SUPABASE_RLS_SETUP.md for database RLS configuration
+# - Resend is easier than SMTP - just one API key needed!
+# - Free tier: 3,000 emails/month, 100 emails/day
+# - No complex SMTP configuration needed
+# - See RESEND_SETUP.md for detailed setup instructions
 # ============================================
