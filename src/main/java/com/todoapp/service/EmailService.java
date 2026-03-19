@@ -2,8 +2,8 @@ package com.todoapp.service;
 
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.SendEmailRequest;
-import com.resend.services.emails.model.SendEmailResponse;
+import com.resend.services.emails.model.CreateEmailRequest; // Changed
+import com.resend.services.emails.model.CreateEmailResponse; // Changed
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,14 +38,15 @@ public class EmailService {
         String htmlBody = buildVerificationEmailHtml(name, verifyUrl);
 
         try {
-            SendEmailRequest emailRequest = SendEmailRequest.builder()
+            CreateEmailRequest emailRequest = CreateEmailRequest.builder() // Changed
                 .from(fromEmail)
                 .to(to)
                 .subject(subject)
                 .html(htmlBody)
                 .build();
 
-            SendEmailResponse response = resendClient
+            CreateEmailResponse response = resendClient
+                // Changed
                 .emails()
                 .send(emailRequest);
 
