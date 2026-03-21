@@ -5,6 +5,7 @@
 # The 'application-local.properties' file is in .gitignore and won't be committed.
 #
 # Usage:
+
 # 1. Copy this file: cp application-local.properties.template application-local.properties
 # 2. Fill in your actual values below
 # 3. Run the application with: ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
