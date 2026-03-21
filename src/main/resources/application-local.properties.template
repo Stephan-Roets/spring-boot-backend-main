@@ -77,11 +77,11 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000
 
 # ============================================
 # NOTES:
-# ============================================
+# ===========================================
 # - Never commit application-local.properties to Git (it's in .gitignore)
 # - For production, set these as environment variables in Railway
 # - Resend is easier than SMTP - just one API key needed!
 # - Free tier: 3,000 emails/month, 100 emails/day
 # - No complex SMTP configuration needed
 # - See RESEND_SETUP.md for detailed setup instructions
-# ============================================
+# ===========================================
