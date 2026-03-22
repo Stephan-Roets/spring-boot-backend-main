@@ -36,26 +36,29 @@ DATABASE_PASSWORD=your-supabase-database-password
 JWT_SECRET=your-256-bit-secret-key-for-local-development-change-this
 
 # ============================================
-# Email Configuration (Resend API)
+# Email Configuration (Brevo API)
 # ============================================
-# Sign up at https://resend.com (Free tier: 3,000 emails/month, 100/day)
-# Get your API key from https://resend.com/api-keys
+# Sign up at https://app.brevo.com (Free tier: 300 emails/day)
+# Get your API key from https://app.brevo.com/settings/keys/api
 
-# Resend API Key (REQUIRED)
-# ⚠️ Replace re_xxxxxxxxx with your actual Resend API key
-RESEND_API_KEY=re_xxxxxxxxx
+# Brevo API Key (REQUIRED)
+# ⚠️ Replace with your actual Brevo API key
+BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# From Email Address (Optional - defaults to onboarding@resend.dev)
-# Default works for testing, but for production use your verified domain
-RESEND_FROM_EMAIL=onboarding@resend.dev
+# From Email Address (REQUIRED)
+# Use the email you verified in Brevo (usually your signup email)
+BREVO_FROM_EMAIL=your-email@gmail.com
 
-# To use your own domain (recommended for production):
-# 1. Go to https://resend.com/domains
-# 2. Click "Add Domain"
-# 3. Add your domain (e.g., yourdomain.com)
-# 4. Add the required DNS records (MX, TXT for SPF, DKIM)
-# 5. Wait for verification (usually a few minutes)
-# 6. Update the from email: RESEND_FROM_EMAIL=noreply@yourdomain.com
+# From Name (Optional - defaults to "ToDo App")
+BREVO_FROM_NAME=ToDo App
+
+# Setup Instructions:
+# 1. Sign up at https://app.brevo.com (free account)
+# 2. Verify your email address (check your inbox)
+# 3. Go to https://app.brevo.com/settings/keys/api
+# 4. Create a new API key or copy existing one
+# 5. Paste it above as BREVO_API_KEY
+# 6. Set BREVO_FROM_EMAIL to your verified email
 
 # ============================================
 # Frontend URL
@@ -80,8 +83,8 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000
 # ===========================================
 # - Never commit application-local.properties to Git (it's in .gitignore)
 # - For production, set these as environment variables in Railway
-# - Resend is easier than SMTP - just one API key needed!
-# - Free tier: 3,000 emails/month, 100 emails/day
+# - Brevo is easier than SMTP - just one API key needed!
+# - Free tier: 300 emails/day (no domain verification required)
 # - No complex SMTP configuration needed
-# - See RESEND_SETUP.md for detailed setup instructions
+# - Works immediately with your verified email address
 # ===========================================

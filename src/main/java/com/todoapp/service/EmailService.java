@@ -1,14 +1,15 @@
 package com.todoapp.service;
 
-import com.resend.Resend;
-import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.CreateEmailOptions; // Changed
-import com.resend.services.emails.model.CreateEmailResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
@@ -17,18 +18,25 @@ public class EmailService {
         EmailService.class
     );
 
-    private final Resend resendClient;
+    private final WebClient brevoClient;
     private final String frontendUrl;
     private final String fromEmail;
+    private final String fromName;
 
     public EmailService(
-        @Value("${resend.api.key}") String resendApiKey,
+        @Value("${brevo.api.key}") String brevoApiKey,
         @Value("${app.frontend.url}") String frontendUrl,
-        @Value("${resend.from.email:onboarding@resend.dev}") String fromEmail
+        @Value("${brevo.from.email}") String fromEmail,
+        @Value("${brevo.from.name:ToDo App}") String fromName
     ) {
-        this.resendClient = new Resend(resendApiKey);
+        this.brevoClient = WebClient.builder()
+            .baseUrl("https://api.brevo.com/v3")
+            .defaultHeader("api-key", brevoApiKey)
+            .defaultHeader("Content-Type", "application/json")
+            .build();
         this.frontendUrl = frontendUrl;
         this.fromEmail = fromEmail;
+        this.fromName = fromName;
     }
 
     @Async
@@ -38,29 +46,37 @@ public class EmailService {
         String htmlBody = buildVerificationEmailHtml(name, verifyUrl);
 
         try {
-            CreateEmailOptions emailRequest = CreateEmailOptions.builder() // Changed
-                .from(fromEmail)
-                .to(to)
-                .subject(subject)
-                .html(htmlBody)
-                .build();
-
-            CreateEmailResponse response = resendClient
-                // Changed
-                .emails()
-                .send(emailRequest);
-
-            log.info(
-                "Verification email sent to {} — Resend ID: {}",
-                to,
-                response.getId()
+            Map<String, Object> emailRequest = Map.of(
+                "sender", Map.of(
+                    "email", fromEmail,
+                    "name", fromName
+                ),
+                "to", List.of(Map.of(
+                    "email", to,
+                    "name", name
+                )),
+                "subject", subject,
+                "htmlContent", htmlBody
             );
-        } catch (ResendException e) {
-            log.warn(
-                "Failed to send verification email to {} — Resend error: {}",
-                to,
-                e.getMessage()
-            );
+
+            brevoClient.post()
+                .uri("/smtp/email")
+                .bodyValue(emailRequest)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .doOnSuccess(response -> log.info(
+                    "Verification email sent to {} — Brevo ID: {}",
+                    to,
+                    response.get("messageId")
+                ))
+                .doOnError(error -> log.warn(
+                    "Failed to send verification email to {} — Brevo error: {}",
+                    to,
+                    error.getMessage()
+                ))
+                .onErrorResume(e -> Mono.empty())
+                .subscribe();
+
         } catch (Exception e) {
             log.warn(
                 "Failed to send verification email to {} — {}: {}",
