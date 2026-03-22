@@ -11,6 +11,10 @@ import java.util.UUID;
 public interface TodoRepository extends JpaRepository<Todo, UUID> {
     List<Todo> findByUserIdOrderByCreatedAtDesc(UUID userId);
     List<Todo> findAllByOrderByCreatedAtDesc();
+    List<Todo> findByAssignedToIdOrderByCreatedAtDesc(UUID assignedToId);
+    List<Todo> findByAssignedByIdOrderByCreatedAtDesc(UUID assignedById);
     long countByUserId(UUID userId);
     long countByUserIdAndStatus(UUID userId, Todo.Status status);
+    long countByAssignedToId(UUID assignedToId);
+    long countByAssignedToIdAndStatus(UUID assignedToId, Todo.Status status);
 }

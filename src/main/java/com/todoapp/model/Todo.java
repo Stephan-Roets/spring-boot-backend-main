@@ -25,6 +25,14 @@ public class Todo {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_by_id")
+    private User assignedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id")
+    private User assignedTo;
+
     @Column(nullable = false)
     private String title;
 
@@ -44,6 +52,9 @@ public class Todo {
 
     @Column(name = "due_date")
     private OffsetDateTime dueDate;
+
+    @Column(name = "original_due_date")
+    private OffsetDateTime originalDueDate;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
