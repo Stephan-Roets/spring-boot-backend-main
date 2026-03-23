@@ -46,25 +46,28 @@ public class TaskAssignmentService {
         // Validate role-based assignment permissions
         validateAssignmentPermission(assigner, assignee);
 
+        // Determine priority
+        Todo.Priority priority = Todo.Priority.MEDIUM;
+        if (StringUtils.hasText(request.getPriority())) {
+            try {
+                priority = Todo.Priority.valueOf(request.getPriority().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid priority: " + request.getPriority());
+            }
+        }
+
         Todo todo = Todo.builder()
                 .user(assignee)
                 .assignedBy(assigner)
                 .assignedTo(assignee)
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .status(Todo.Status.PENDING)
+                .priority(priority)
                 .category(request.getCategory())
                 .dueDate(request.getDueDate())
                 .originalDueDate(request.getDueDate())
                 .build();
-
-        // Set priority if provided
-        if (StringUtils.hasText(request.getPriority())) {
-            try {
-                todo.setPriority(Todo.Priority.valueOf(request.getPriority().toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                throw new BadRequestException("Invalid priority: " + request.getPriority());
-            }
-        }
 
         todo = todoRepository.save(todo);
         return TodoDto.fromEntity(todo);
